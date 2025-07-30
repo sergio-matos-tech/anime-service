@@ -9,5 +9,4 @@ class AnimeServiceApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
