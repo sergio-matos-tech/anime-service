@@ -1,10 +1,7 @@
 package org.api.controllers;
 
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -13,6 +10,14 @@ import java.util.List;
 public class HeroController {
 
     private static final List<String> HEROES = List.of("Guts", "Zoro", "Kakashi", "Goku");
+
+    @GetMapping("{index}")
+    public String findHeroByIndex(@PathVariable Integer index) {
+        return HEROES.stream()
+                .skip(index)
+                .findFirst()
+                .orElseThrow(() -> new ArrayIndexOutOfBoundsException("Index incorrect."));
+    }
 
     @GetMapping
     public List<String> findAll() {
