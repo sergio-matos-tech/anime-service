@@ -4,6 +4,7 @@ package org.api.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.api.domain.Anime;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,9 +42,9 @@ public class AnimeController {
 
     // Idempotent
     @PostMapping
-    public Anime save(@RequestBody Anime anime) {
+    public ResponseEntity<Anime> save(@RequestBody Anime anime) {
         Anime obj = new Anime(ThreadLocalRandom.current().nextLong(100_000), anime.getName());
         Anime.getAnimes().addLast(obj);
-        return obj;
+        return ResponseEntity.status(HttpStatus.CREATED).body(obj);
     }
 }
