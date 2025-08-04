@@ -2,6 +2,7 @@ package org.api.controllers;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.api.mapper.ProducerMapper;
 import org.api.request.ProducerPostRequest;
 import org.api.domain.Producer;
 import org.api.response.ProducerGetResponse;
@@ -18,6 +19,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @RequestMapping(value = "v1/producers")
 @Slf4j
 public class ProducerController {
+
+    private static final ProducerMapper PRODUCER_MAPPER = ProducerMapper.INSTANCE;
 
     @GetMapping
     public List<Producer> findAll() {
@@ -46,13 +49,10 @@ public class ProducerController {
     // Idempotent
     @PostMapping
     public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest) {
-        Producer obj = new Producer(ThreadLocalRandom.current().nextLong(100_000), producerPostRequest.getName(), LocalDateTime.now());
-        Producer.getProducers().add(obj);
-        var response = ProducerGetResponse.builder()
-                .id(obj.getId())
-                .name(obj.getName())
-                .createdAt(obj.getCreatedAt())
-                .build();
+        var producer = PRODUCER_MAPPER.toProducer(producerPostRequest);
+        var response = PRODUCER_MAPPER.toProducerGetResponse(producer);
+
+        Producer.getProducers().add(producer);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
