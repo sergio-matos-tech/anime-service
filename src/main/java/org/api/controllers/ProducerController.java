@@ -2,9 +2,11 @@ package org.api.controllers;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.api.domain.Anime;
 import org.api.mapper.ProducerMapper;
 import org.api.request.ProducerPostRequest;
 import org.api.domain.Producer;
+import org.api.response.AnimeGetResponse;
 import org.api.response.ProducerGetResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,27 +22,36 @@ public class ProducerController {
     private static final ProducerMapper PRODUCER_MAPPER = ProducerMapper.INSTANCE;
 
     @GetMapping
-    public List<Producer> findAll() {
-        log.info(Thread.currentThread().getName());
-        return Producer.getProducers();
+    public ResponseEntity<List<ProducerGetResponse>> findAll() {
+        log.info("Request all producers");
+        var producers = Producer.getProducers();
+        List<ProducerGetResponse> producerGetResponses = PRODUCER_MAPPER.toProducerGetResponseList(producers);
+
+        return ResponseEntity.ok(producerGetResponses.stream().toList());
     }
 
     @GetMapping("/search")
-    public Producer findByName(@RequestParam(required = false) String name) {
-        return Producer.getProducers()
-                .stream()
-                .filter(producer -> producer.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public ResponseEntity<List<ProducerGetResponse>> findByName(@RequestParam(required = false) String name) {
+        log.debug("Request to find by name: {}", name);
+
+        var producers = Producer.getProducers();
+        List<ProducerGetResponse> producerGetResponse = PRODUCER_MAPPER.toProducerGetResponseList(producers);
+
+        return ResponseEntity.ok(producerGetResponse.stream().filter(p -> p.getName().equalsIgnoreCase(name)).toList());
     }
 
     @GetMapping("/{id}")
-    public Producer findById(@PathVariable Long id) {
-        return Producer.getProducers()
+    public ResponseEntity<ProducerGetResponse> findById(@PathVariable Long id) {
+
+        log.debug("Request to find producer by id: {}", id);
+        var producerGetResponse = Producer.getProducers()
                 .stream()
                 .filter(producer -> producer.getId().equals(id))
                 .findFirst()
+                .map(PRODUCER_MAPPER::toProducerGetResponse)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        return ResponseEntity.ok(producerGetResponse);
     }
 
     // Idempotent
