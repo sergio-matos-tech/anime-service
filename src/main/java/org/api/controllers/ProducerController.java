@@ -21,6 +21,7 @@ public class ProducerController {
 
     private static final ProducerMapper PRODUCER_MAPPER = ProducerMapper.INSTANCE;
 
+    // idempotent HTTP method
     @GetMapping
     public ResponseEntity<List<ProducerGetResponse>> findAll() {
         log.info("Request all producers");
@@ -30,6 +31,7 @@ public class ProducerController {
         return ResponseEntity.ok(producerGetResponses.stream().toList());
     }
 
+    // idempotent HTTP method
     @GetMapping("/search")
     public ResponseEntity<List<ProducerGetResponse>> findByName(@RequestParam(required = false) String name) {
         log.debug("Request to find by name: {}", name);
@@ -40,6 +42,7 @@ public class ProducerController {
         return ResponseEntity.ok(producerGetResponse.stream().filter(p -> p.getName().equalsIgnoreCase(name)).toList());
     }
 
+    // idempotent HTTP method
     @GetMapping("/{id}")
     public ResponseEntity<ProducerGetResponse> findById(@PathVariable Long id) {
 
@@ -54,7 +57,7 @@ public class ProducerController {
         return ResponseEntity.ok(producerGetResponse);
     }
 
-    // Idempotent
+    // idempotent HTTP method
     @PostMapping
     public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest) {
         var producer = PRODUCER_MAPPER.toProducer(producerPostRequest);
@@ -63,5 +66,22 @@ public class ProducerController {
         Producer.getProducers().add(producer);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+
+    // idempotent HTTP method
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        log.debug("Request to delete producer by id: {}", id);
+
+        var producerToDelete = Producer.getProducers()
+                .stream()
+                .filter(producer -> producer.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        Producer.getProducers().remove(producerToDelete);
+
+        return ResponseEntity.noContent().build();
     }
 }

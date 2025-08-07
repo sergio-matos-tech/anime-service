@@ -21,6 +21,7 @@ public class AnimeController {
 
     private static final AnimeMapper ANIME_MAPPER = AnimeMapper.INSTANCE;
 
+    // idempotent HTTP method
     @GetMapping
     public ResponseEntity<List<AnimeGetResponse>> findAll() {
         log.debug("Request all animes");
@@ -30,6 +31,7 @@ public class AnimeController {
         return ResponseEntity.ok(animeGetResponseList.stream().toList());
     }
 
+    // idempotent HTTP method
     @GetMapping("/search")
     public ResponseEntity<List<AnimeGetResponse>> findByName(@RequestParam(required = false) String name) {
         log.debug("Request to find by name: {}", name);
@@ -43,6 +45,7 @@ public class AnimeController {
         return ResponseEntity.ok(response);
     }
 
+    // idempotent HTTP method
     @GetMapping("/{id}")
     public ResponseEntity<AnimeGetResponse> findById(@PathVariable Long id) {
 
@@ -57,7 +60,7 @@ public class AnimeController {
         return ResponseEntity.ok(animeGetResponse);
     }
 
-    // Idempotent
+    // idempotent HTTP method
     @PostMapping
     public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest request) {
         log.debug("Request to save anime : {}", request);
@@ -68,5 +71,21 @@ public class AnimeController {
         var response = ANIME_MAPPER.toAnimePostResponse(anime);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    // idempotent HTTP method
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        log.debug("Request to delete anime by id: {}", id);
+
+        var animeToDelete = Anime.getAnimes()
+                .stream()
+                .filter(anime -> anime.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        Anime.getAnimes().remove(animeToDelete);
+
+        return ResponseEntity.noContent().build();
     }
 }
