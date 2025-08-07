@@ -1,8 +1,5 @@
 package org.api.domain;
 
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,12 +20,12 @@ public class Producer {
     @Getter
     private static List<Producer> producers = new ArrayList<>();
     static {
-        Producer Madhouse = new Producer(1L, "Madhouse", LocalDateTime.now());
-        Producer Pierrot = new Producer(2L, "Pierrot", LocalDateTime.now());
-        Producer WitStudio = new Producer(3L, "Wit Studio", LocalDateTime.now());
-        Producer Bones = new Producer(4L, "Bones", LocalDateTime.now());
-        Producer ToeiAnimation = new Producer(5L, "ToeiAnimation", LocalDateTime.now());
-        Collections.addAll(producers, Madhouse, Pierrot, WitStudio, Bones, ToeiAnimation);
+        Producer madhouse = new Producer(1L, "Madhouse", LocalDateTime.now());
+        Producer pierrot = new Producer(2L, "Pierrot", LocalDateTime.now());
+        Producer witStudio = new Producer(3L, "Wit Studio", LocalDateTime.now());
+        Producer bones = new Producer(4L, "Bones", LocalDateTime.now());
+        Producer toeiAnimation = new Producer(5L, "ToeiAnimation", LocalDateTime.now());
+        Collections.addAll(producers, madhouse, pierrot, witStudio, bones, toeiAnimation);
     }
 
     public Producer() {}

@@ -3,48 +3,70 @@ package org.api.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.api.domain.Anime;
+import org.api.mapper.AnimeMapper;
+import org.api.request.AnimePostRequest;
+import org.api.response.AnimeGetResponse;
+import org.api.response.AnimePostResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 @RestController()
 @RequestMapping(value = "v1/animes")
 @Slf4j
 public class AnimeController {
 
+    private static final AnimeMapper ANIME_MAPPER = AnimeMapper.INSTANCE;
+
     @GetMapping
-    public List<Anime> findAll() {
-        log.info(Thread.currentThread().getName());
-        return Anime.getAnimes();
+    public ResponseEntity<List<AnimeGetResponse>> findAll() {
+        log.debug("Request all animes");
+        var animes = Anime.getAnimes();
+        List<AnimeGetResponse> animeGetResponseList = ANIME_MAPPER.toAnimeGetResponseList(animes);
+
+        return ResponseEntity.ok(animeGetResponseList.stream().toList());
     }
 
     @GetMapping("/search")
-    public Anime findByName(@RequestParam(required = false) String name) {
-        return Anime.getAnimes()
-                .stream()
+    public ResponseEntity<List<AnimeGetResponse>> findByName(@RequestParam(required = false) String name) {
+        log.debug("Request to find by name: {}", name);
+        var animes = Anime.getAnimes();
+        List<AnimeGetResponse> animeGetResponseList = ANIME_MAPPER.toAnimeGetResponseList(animes);
+
+        var response = animeGetResponseList.stream()
                 .filter(anime -> anime.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public Anime findById(@PathVariable Long id) {
-        return Anime.getAnimes()
+    public ResponseEntity<AnimeGetResponse> findById(@PathVariable Long id) {
+
+        log.debug("Request to find anime by id: {}", id);
+        var animeGetResponse = Anime.getAnimes()
                 .stream()
                 .filter(anime -> anime.getId().equals(id))
                 .findFirst()
+                .map(ANIME_MAPPER::toAnimeGetResponse)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        return ResponseEntity.ok(animeGetResponse);
     }
 
     // Idempotent
     @PostMapping
-    public ResponseEntity<Anime> save(@RequestBody Anime anime) {
-        Anime obj = new Anime(ThreadLocalRandom.current().nextLong(100_000), anime.getName());
-        Anime.getAnimes().addLast(obj);
-        return ResponseEntity.status(HttpStatus.CREATED).body(obj);
+    public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest request) {
+        log.debug("Request to save anime : {}", request);
+        var anime = ANIME_MAPPER.toAnime(request);
+
+        Anime.getAnimes().add(anime);
+
+        var response = ANIME_MAPPER.toAnimePostResponse(anime);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
