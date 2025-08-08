@@ -1,13 +1,15 @@
 package org.api.request;
 
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
-@Setter
 @Getter
-@ToString
-public class ProducerPostRequest {
+@Setter
+@Builder
+public class AnimePutRequest {
 
+    private Long id;
     private String name;
 }

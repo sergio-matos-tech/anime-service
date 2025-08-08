@@ -6,12 +6,15 @@ import org.api.domain.Anime;
 import org.api.mapper.ProducerMapper;
 import org.api.request.ProducerPostRequest;
 import org.api.domain.Producer;
+import org.api.request.ProducerPutRequest;
 import org.api.response.AnimeGetResponse;
 import org.api.response.ProducerGetResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController()
@@ -57,7 +60,6 @@ public class ProducerController {
         return ResponseEntity.ok(producerGetResponse);
     }
 
-    // idempotent HTTP method
     @PostMapping
     public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest) {
         var producer = PRODUCER_MAPPER.toProducer(producerPostRequest);
@@ -81,6 +83,23 @@ public class ProducerController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Producer.getProducers().remove(producerToDelete);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> update(@RequestBody ProducerPutRequest request) {
+        log.debug("Request to delete producer: {}", request);
+
+        var producerToDelete = Producer.getProducers()
+                .stream()
+                .filter(producer -> producer.getId().equals(request.getId()))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        var producerUpdated = PRODUCER_MAPPER.toProducer(request, LocalDateTime.now());
+        Producer.getProducers().remove(producerToDelete);
+        Producer.getProducers().add(producerUpdated);
 
         return ResponseEntity.noContent().build();
     }

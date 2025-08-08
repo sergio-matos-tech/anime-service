@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.api.domain.Anime;
 import org.api.mapper.AnimeMapper;
 import org.api.request.AnimePostRequest;
+import org.api.request.AnimePutRequest;
 import org.api.response.AnimeGetResponse;
 import org.api.response.AnimePostResponse;
 import org.springframework.http.HttpStatus;
@@ -60,7 +61,7 @@ public class AnimeController {
         return ResponseEntity.ok(animeGetResponse);
     }
 
-    // idempotent HTTP method
+
     @PostMapping
     public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest request) {
         log.debug("Request to save anime : {}", request);
@@ -85,6 +86,25 @@ public class AnimeController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Anime.getAnimes().remove(animeToDelete);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
+    // idempotent HTTP method
+    @PutMapping
+    public ResponseEntity<AnimeGetResponse> update(@RequestBody AnimePutRequest request) {
+        log.debug("Request to update anime {}", request);
+
+        var animeToRemove = Anime.getAnimes()
+                .stream()
+                .filter(a -> a.getId().equals(request.getId()))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        var animeUpdated = ANIME_MAPPER.toAnime(request);
+        Anime.getAnimes().remove(animeToRemove);
+        Anime.getAnimes().add(animeUpdated);
 
         return ResponseEntity.noContent().build();
     }
