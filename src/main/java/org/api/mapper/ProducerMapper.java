@@ -23,5 +23,5 @@ public interface ProducerMapper {
 
     List<ProducerGetResponse> toProducerGetResponseList(List<Producer> producers);
 
-    Producer toProducer(ProducerPutRequest request, LocalDateTime createdAt);
+    Producer toProducer(ProducerPutRequest request);
 }
