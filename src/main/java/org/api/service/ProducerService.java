@@ -5,7 +5,6 @@ import org.api.repository.ProducerHardCodedRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class ProducerService {
@@ -37,9 +36,9 @@ public class ProducerService {
         repository.deleteById(producerToDelete.getId());
     }
 
-    public void update(Producer producer) {
-        var producerToUpdate = findById(producer.getId());
-        producerToUpdate.setCreatedAt(producerToUpdate.getCreatedAt());
+    public void update(Producer producerToUpdate) {
+        var producer = findById(producerToUpdate.getId());
+        producerToUpdate.setCreatedAt(producer.getCreatedAt());
         repository.update(producerToUpdate);
     }
 }

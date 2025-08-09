@@ -41,6 +41,6 @@ public class ProducerHardCodedRepository {
 
     public void update(Producer producer) {
         deleteById(producer.getId());
-        PRODUCERS.add(Math.toIntExact(producer.getId()), producer);
+        PRODUCERS.add(producer);
     }
 }
