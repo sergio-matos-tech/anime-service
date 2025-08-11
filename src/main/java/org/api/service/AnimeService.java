@@ -2,18 +2,21 @@ package org.api.service;
 
 import org.api.domain.Anime;
 import org.api.repository.AnimeHardCodeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@Service
 public class AnimeService {
 
     private final AnimeHardCodeRepository repository;
 
-
-    public AnimeService() {
-        this.repository = new AnimeHardCodeRepository();
+    @Autowired
+    public AnimeService(AnimeHardCodeRepository repository) {
+        this.repository = repository;
     }
 
     public List<Anime> findAll() {

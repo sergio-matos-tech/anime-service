@@ -7,6 +7,7 @@ import org.api.request.AnimePostRequest;
 import org.api.request.AnimePutRequest;
 import org.api.response.AnimeGetResponse;
 import org.api.service.AnimeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,9 @@ public class AnimeController {
 
     private final AnimeService service;
 
-    public AnimeController() {
-        this.service = new AnimeService();
+    @Autowired
+    public AnimeController(AnimeService service) {
+        this.service = service;
     }
 
     // idempotent HTTP method

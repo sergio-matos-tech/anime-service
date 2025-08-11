@@ -2,20 +2,16 @@ package org.api.controllers;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.api.domain.Anime;
 import org.api.mapper.ProducerMapper;
 import org.api.request.ProducerPostRequest;
-import org.api.domain.Producer;
 import org.api.request.ProducerPutRequest;
-import org.api.response.AnimeGetResponse;
 import org.api.response.ProducerGetResponse;
 import org.api.service.ProducerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController()
@@ -27,8 +23,9 @@ public class ProducerController {
 
     private final ProducerService service;
 
-    public ProducerController() {
-        this.service = new ProducerService();
+    @Autowired
+    public ProducerController(ProducerService service) {
+        this.service = service;
     }
 
     // idempotent HTTP method
