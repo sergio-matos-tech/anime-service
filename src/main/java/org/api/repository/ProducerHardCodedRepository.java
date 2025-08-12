@@ -1,7 +1,7 @@
 package org.api.repository;
 
 import org.api.domain.Producer;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Repository
 public class ProducerHardCodedRepository {
 
     private static final List<Producer> PRODUCERS = new ArrayList<>();

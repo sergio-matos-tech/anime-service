@@ -91,7 +91,7 @@ public class AnimeController {
 
     // idempotent HTTP method
     @PutMapping
-    public ResponseEntity<AnimeGetResponse> update(@RequestBody AnimePutRequest request) {
+    public ResponseEntity<Void> update(@RequestBody AnimePutRequest request) {
         log.debug("Request to update anime {}", request);
 
         var animeToUpdate = ANIME_MAPPER.toAnime(request);

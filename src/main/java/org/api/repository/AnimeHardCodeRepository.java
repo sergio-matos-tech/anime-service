@@ -1,14 +1,14 @@
 package org.api.repository;
 
 import org.api.domain.Anime;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Repository
 public class AnimeHardCodeRepository {
 
     private final static List<Anime> ANIMES = new ArrayList<>();

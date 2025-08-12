@@ -4,7 +4,6 @@ import org.api.domain.Anime;
 import org.api.request.AnimePostRequest;
 import org.api.request.AnimePutRequest;
 import org.api.response.AnimeGetResponse;
-import org.api.response.AnimePostResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -20,8 +19,6 @@ public interface AnimeMapper {
     Anime toAnime(AnimePostRequest postRequest);
 
     Anime toAnime(AnimePutRequest request);
-
-    AnimePostResponse toAnimePostResponse(Anime anime);
 
     AnimeGetResponse toAnimeGetResponse(Anime anime);
 
