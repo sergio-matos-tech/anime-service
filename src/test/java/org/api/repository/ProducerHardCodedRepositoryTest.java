@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 @ExtendWith(MockitoExtension.class)
 class ProducerHardCodedRepositoryTest {
@@ -37,7 +39,7 @@ class ProducerHardCodedRepositoryTest {
     }
 
     @Test
-    @DisplayName("findAll must returns a list with all PRODUCERS")
+    @DisplayName("findAll must return a list with all PRODUCERS")
     void findAll_ReturnsAllProducers_whenSuccesful() {
         BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
 
@@ -46,7 +48,7 @@ class ProducerHardCodedRepositoryTest {
     }
 
     @Test
-    @DisplayName("findById must returns a producer with given id")
+    @DisplayName("findById must return a producer with given id")
     void findById_ReturnsProducer_whenSuccesful() {
         BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
 
@@ -56,7 +58,7 @@ class ProducerHardCodedRepositoryTest {
     }
 
     @Test
-    @DisplayName("findByName must returns a producer with given name")
+    @DisplayName("findByName must return a producer with given name")
     void findByName_ReturnsProducer_WhenSuccesful() {
         BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
 
@@ -65,6 +67,17 @@ class ProducerHardCodedRepositoryTest {
         Assertions.assertThat(producer).isPresent().contains(expectedProducer);
     }
 
+    @Test
+    @DisplayName("save must create a producer")
+    void save_CreatesProducer_WhenSuccesful() {
+        BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
 
+        var producerToSave = new Producer(ThreadLocalRandom.current().nextLong(), "MAPPA", LocalDateTime.now());
+        var producer = repository.save(producerToSave);
 
+        Assertions.assertThat(producer).isEqualTo(producerToSave).hasNoNullFieldsOrProperties();
+
+        var producerSavedOptional = repository.findById(producerToSave.getId());
+        Assertions.assertThat(producerSavedOptional).isPresent().contains(producerToSave);
+    }
 }
