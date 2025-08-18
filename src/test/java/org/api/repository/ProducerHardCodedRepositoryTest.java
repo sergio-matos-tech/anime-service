@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(MockitoExtension.class)
 class ProducerHardCodedRepositoryTest {
 
@@ -26,7 +24,7 @@ class ProducerHardCodedRepositoryTest {
 
     @Mock
     private ProducerData producerData;
-    private List<Producer> producers = new ArrayList<>();
+    private final List<Producer> PRODUCERS = new ArrayList<>();
 
     @BeforeEach
     void init() {
@@ -35,14 +33,38 @@ class ProducerHardCodedRepositoryTest {
         Producer witStudio = new Producer(3L, "Wit Studio", LocalDateTime.now());
         Producer bones = new Producer(4L, "Bones", LocalDateTime.now());
         Producer toeiAnimation = new Producer(5L, "ToeiAnimation", LocalDateTime.now());
-        Collections.addAll(producers, madhouse, pierrot, witStudio, bones, toeiAnimation);
+        Collections.addAll(PRODUCERS, madhouse, pierrot, witStudio, bones, toeiAnimation);
     }
 
     @Test
-    @DisplayName("findAll must returns a list with all producers")
+    @DisplayName("findAll must returns a list with all PRODUCERS")
     void findAll_ReturnsAllProducers_whenSuccesful() {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producers);
+        BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
+
         var producers = repository.findAll();
         Assertions.assertThat(producers).isNotNull().hasSize(5);
     }
+
+    @Test
+    @DisplayName("findById must returns a producer with given id")
+    void findById_ReturnsProducer_whenSuccesful() {
+        BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
+
+        var expectedProducer = PRODUCERS.getFirst();
+        var producer = repository.findById(expectedProducer.getId());
+        Assertions.assertThat(producer).isPresent().contains(expectedProducer);
+    }
+
+    @Test
+    @DisplayName("findByName must returns a producer with given name")
+    void findByName_ReturnsProducer_WhenSuccesful() {
+        BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
+
+        var expectedProducer = PRODUCERS.getFirst();
+        var producer = repository.findByName(expectedProducer.getName());
+        Assertions.assertThat(producer).isPresent().contains(expectedProducer);
+    }
+
+
+
 }
