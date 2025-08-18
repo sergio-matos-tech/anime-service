@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 @ExtendWith(MockitoExtension.class)
@@ -90,5 +89,22 @@ class ProducerHardCodedRepositoryTest {
         repository.deleteById(producerToDelete.getId());
 
         Assertions.assertThat(this.PRODUCERS).isNotEmpty().doesNotContain(producerToDelete);
+    }
+
+    @Test
+    @DisplayName("update must update a producer")
+    void update_UpdatesProducer_WhenSuccesful() {
+        BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
+
+        var producerToUpdate = this.PRODUCERS.getFirst();
+        producerToUpdate.setName("Aniplex");
+        repository.update(producerToUpdate);
+
+        Assertions.assertThat(this.PRODUCERS).contains(producerToUpdate);
+
+        var producerUpdatedOptional = repository.findById(producerToUpdate.getId());
+
+        Assertions.assertThat(producerUpdatedOptional).isPresent();
+        Assertions.assertThat(producerUpdatedOptional.get().getName()).isEqualTo("Aniplex");
     }
 }
