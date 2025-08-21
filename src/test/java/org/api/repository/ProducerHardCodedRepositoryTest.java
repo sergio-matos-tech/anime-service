@@ -25,7 +25,7 @@ class ProducerHardCodedRepositoryTest {
 
     @Mock
     private ProducerData producerData;
-    private final List<Producer> PRODUCERS = new ArrayList<>();
+    private List<Producer> producers;
 
     @BeforeEach
     void init() {
@@ -34,13 +34,14 @@ class ProducerHardCodedRepositoryTest {
         Producer witStudio = new Producer(3L, "Wit Studio", LocalDateTime.now());
         Producer bones = new Producer(4L, "Bones", LocalDateTime.now());
         Producer toeiAnimation = new Producer(5L, "ToeiAnimation", LocalDateTime.now());
-        Collections.addAll(PRODUCERS, madhouse, pierrot, witStudio, bones, toeiAnimation);
+        producers = new ArrayList<>();
+        Collections.addAll(producers, madhouse, pierrot, witStudio, bones, toeiAnimation);
     }
 
     @Test
-    @DisplayName("findAll must return a list with all PRODUCERS")
+    @DisplayName("findAll must return a list with all producers")
     void findAll_ReturnsAllProducers_whenSuccesful() {
-        BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
+        BDDMockito.when(producerData.getProducers()).thenReturn(producers);
 
         var producers = repository.findAll();
         Assertions.assertThat(producers).isNotNull().hasSize(5);
@@ -49,9 +50,9 @@ class ProducerHardCodedRepositoryTest {
     @Test
     @DisplayName("findById must return a producer with given id")
     void findById_ReturnsProducer_whenSuccesful() {
-        BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
+        BDDMockito.when(producerData.getProducers()).thenReturn(producers);
 
-        var expectedProducer = PRODUCERS.getFirst();
+        var expectedProducer = producers.getFirst();
         var producer = repository.findById(expectedProducer.getId());
         Assertions.assertThat(producer).isPresent().contains(expectedProducer);
     }
@@ -59,9 +60,9 @@ class ProducerHardCodedRepositoryTest {
     @Test
     @DisplayName("findByName must return a producer with given name")
     void findByName_ReturnsProducer_WhenSuccesful() {
-        BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
+        BDDMockito.when(producerData.getProducers()).thenReturn(producers);
 
-        var expectedProducer = PRODUCERS.getFirst();
+        var expectedProducer = producers.getFirst();
         var producer = repository.findByName(expectedProducer.getName());
         Assertions.assertThat(producer).isPresent().contains(expectedProducer);
     }
@@ -69,7 +70,7 @@ class ProducerHardCodedRepositoryTest {
     @Test
     @DisplayName("save must create a producer")
     void save_CreatesProducer_WhenSuccesful() {
-        BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
+        BDDMockito.when(producerData.getProducers()).thenReturn(producers);
 
         var producerToSave = new Producer(ThreadLocalRandom.current().nextLong(), "MAPPA", LocalDateTime.now());
         var producer = repository.save(producerToSave);
@@ -83,24 +84,24 @@ class ProducerHardCodedRepositoryTest {
     @Test
     @DisplayName("delete removes a producer")
     void delete_RemovesProducer_WhenSuccesful() {
-        BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
+        BDDMockito.when(producerData.getProducers()).thenReturn(producers);
 
-        var producerToDelete = PRODUCERS.getFirst();
+        var producerToDelete = producers.getFirst();
         repository.deleteById(producerToDelete.getId());
 
-        Assertions.assertThat(this.PRODUCERS).isNotEmpty().doesNotContain(producerToDelete);
+        Assertions.assertThat(this.producers).isNotEmpty().doesNotContain(producerToDelete);
     }
 
     @Test
     @DisplayName("update must update a producer")
     void update_UpdatesProducer_WhenSuccesful() {
-        BDDMockito.when(producerData.getProducers()).thenReturn(PRODUCERS);
+        BDDMockito.when(producerData.getProducers()).thenReturn(producers);
 
-        var producerToUpdate = this.PRODUCERS.getFirst();
+        var producerToUpdate = this.producers.getFirst();
         producerToUpdate.setName("Aniplex");
         repository.update(producerToUpdate);
 
-        Assertions.assertThat(this.PRODUCERS).contains(producerToUpdate);
+        Assertions.assertThat(this.producers).contains(producerToUpdate);
 
         var producerUpdatedOptional = repository.findById(producerToUpdate.getId());
 

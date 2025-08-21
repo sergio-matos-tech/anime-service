@@ -1,47 +1,39 @@
 package org.api.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.api.domain.Anime;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class AnimeHardCodeRepository {
 
-    private final static List<Anime> ANIMES = new ArrayList<>();
-    static {
-        Anime deathNote = new Anime(1L, "Death Note");
-        Anime naruto = new Anime(2L, "Naruto");
-        Anime attackOnTitan = new Anime(3L, "Attack on Titan");
-        Anime fullmetalAlchemist = new Anime(4L, "Fullmetal Alchemist");
-        Anime dragonBallSuper = new Anime(5L, "Dragon Ball Super");
-        Collections.addAll(ANIMES, deathNote, naruto, attackOnTitan, fullmetalAlchemist, dragonBallSuper);
-    }
+    private final AnimeData animeData;
 
-    public List<Anime> findAll() { return ANIMES; }
+    public List<Anime> findAll() { return animeData.getAnimes(); }
 
     public Optional<Anime> findByName(String name) {
-        return ANIMES.stream().filter(anime -> anime.getName().equalsIgnoreCase(name)).findFirst();
+        return animeData.getAnimes().stream().filter(anime -> anime.getName().equalsIgnoreCase(name)).findFirst();
     }
 
     public Optional<Anime> findById(Long id) {
-        return ANIMES.stream().filter(anime -> anime.getId().equals(id)).findFirst();
+        return animeData.getAnimes().stream().filter(anime -> anime.getId().equals(id)).findFirst();
     }
 
     public Anime save(Anime animeToSave) {
-        ANIMES.add(animeToSave);
+        animeData.getAnimes().add(animeToSave);
         return animeToSave;
     }
 
     public void deleteById(Long id) {
-        ANIMES.removeIf(anime -> anime.getId().equals(id));
+        animeData.getAnimes().removeIf(anime -> anime.getId().equals(id));
     }
 
     public void update(Anime animeToUpdate) {
         deleteById(animeToUpdate.getId());
-        ANIMES.add(animeToUpdate);
+        animeData.getAnimes().add(animeToUpdate);
     }
 }

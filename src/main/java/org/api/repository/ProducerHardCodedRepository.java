@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-@Log4j2
 public class ProducerHardCodedRepository {
 
     private final ProducerData producerData;
