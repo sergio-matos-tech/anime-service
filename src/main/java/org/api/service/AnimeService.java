@@ -19,7 +19,9 @@ public class AnimeService {
         this.repository = repository;
     }
 
-    public List<Anime> findAll() { return repository.findAll(); }
+    public List<Anime> findAll() {
+        return repository.findAll();
+    }
 
     public Anime findByName(String name) {
         return repository.findByName(name).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -29,7 +31,9 @@ public class AnimeService {
         return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public Anime save(Anime animeToSave) { return repository.save(animeToSave); }
+    public Anime save(Anime animeToSave) {
+        return repository.save(animeToSave);
+    }
 
     public void deleteById(Long id) {
         var animeToDelete = findById(id); // Checks if anime exists, throws 404 if not.
