@@ -1,4 +1,4 @@
-# Spring Boot 3 & Java - Building a Complete REST API
+# Spring Boot - Building a Complete REST API
 
 This repository contains the source code developed during the DevDojo intensive Spring Boot - Direto das Trincheiras course. The project involves creating a REST API for managing animes and producers, covering everything from the initial environment setup to deployment, with a strong focus on best practices, clean architecture, and robust testing.
 
