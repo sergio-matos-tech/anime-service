@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 
 // This annotation integrates Mockito with JUnit 5, enabling mock creation and injection.
 @ExtendWith(MockitoExtension.class)
@@ -161,7 +159,7 @@ class AnimeServiceTest {
     void save_CreatesAnime_WhenSuccessful() {
         // --- Arrange (Given) ---
         var animeToSave = new Anime(ThreadLocalRandom.current().nextLong(), "Aniplex");
-        // We mock the repository's save method to return the same object it receives.
+        // We mock the repository's 'save method' to return the same object it receives.
         BDDMockito.when(repository.save(animeToSave))
                 .thenReturn(animeToSave);
 
