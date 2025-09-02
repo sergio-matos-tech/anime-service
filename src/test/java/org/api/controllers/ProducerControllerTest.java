@@ -78,4 +78,30 @@ class ProducerControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("/v1/producers?param=x returns a single producer when successful")
+    void findByName_ReturnsSingleProducer_WhenSuccessful() throws Exception {
+        var mockProducer = new Producer(1L, "Madhouse", LocalDateTime.now());
+
+        BDDMockito.given(producerService.findByName("Madhouse"))
+                .willReturn(mockProducer);
+
+        mockMvc.perform(get("/v1/producers/search").param("name", "Madhouse"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.name").value("Madhouse"));
+    }
+
+    @Test
+    @DisplayName("findByName returns 404 when producer is not found")
+    void findByName_Returns404_WhenProducerNotFound() throws Exception {
+        BDDMockito.given(producerService.findByName("NonExistent"))
+                .willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        mockMvc.perform(get("/v1/producers/search").param("name", "NonExistent"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound());
+    }
 }
