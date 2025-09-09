@@ -43,7 +43,12 @@ class ProducerControllerTest {
         // Arrange
         List<Producer> mockProducers = List.of(
                 new Producer(1L, "Madhouse", LocalDateTime.now()),
-                new Producer(2L, "Pierrot", LocalDateTime.now())
+                new Producer(2L, "Pierrot", LocalDateTime.now()),
+                new Producer(3L, "Bones", LocalDateTime.now()),
+                new Producer(4L, "Kyoto Animation", LocalDateTime.now()),
+                new Producer(5L, "Production I.G", LocalDateTime.now()),
+                new Producer(6L, "MAPPA", LocalDateTime.now()),
+                new Producer(7L, "Toei Animation", LocalDateTime.now())
         );
         BDDMockito.given(producerService.findAll()).willReturn(mockProducers);
 
@@ -52,11 +57,11 @@ class ProducerControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$.length()").value(7))
                 .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[0].name").value("Madhouse"))
-                .andExpect(jsonPath("$[1].id").value(2L))
-                .andExpect(jsonPath("$[1].name").value("Pierrot"));
+                .andExpect(jsonPath("$[4].id").value(5L))
+                .andExpect(jsonPath("$[4].name").value("Production I.G"));
     }
 
     @Test
